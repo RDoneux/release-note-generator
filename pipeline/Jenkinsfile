@@ -86,7 +86,7 @@ pipeline {
                             dir("infra") {
                                 sh "npm i"
                                 sh "pulumi stack select ${PULUMI_STACK}"
-                                withCredentials([string(credentialsId: 'PULUMI_ENCRYPTION_KEY', variable: "PULUMI_CONFIG_PASSPHRASE")]) {
+                                withCredentials([string(credentialsId: 'PULUMI_CONFIG_PASSPHRASE', variable: "PULUMI_CONFIG_PASSPHRASE")]) {
                                     sh "pulumi up --yes"
                                 }
                             }  

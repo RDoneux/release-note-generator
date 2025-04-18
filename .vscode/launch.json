@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Debug Webpage in Firefox",
+      "url": "http://localhost:3000", // Update to the correct URL
+      "webRoot": "${workspaceFolder}/dist",
+      "pathMappings": [
+        {
+          "url": "http://localhost:3000", // Match the served URL
+          "path": "${workspaceFolder}/dist" // Match the local build directory
+        }
+      ]
+    }
+  ]
+}

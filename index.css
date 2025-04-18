@@ -73,10 +73,45 @@ md-icon {
   cursor: pointer;
 }
 
+.flatpickr-calendar {
+  * {
+    background-color: var(--background-high-colour) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    fill: var(--md-sys-color-on-surface);
+  }
+
+  border: 1px solid var(--background-high-colour) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+  &::before,
+  &::after {
+    border-bottom-color: var(--background-high-colour) !important;
+  }
+  .arrowUp::after,
+  .arrowDown::after {
+    border-top-color: var(--md-sys-color-on-surface) !important;
+    border-bottom-color: var(--md-sys-color-on-surface) !important;
+  }
+  .flatpickr-current-month {
+    padding-top: 3px;
+  }
+  .inRange {
+    background: var(--md-sys-color-on-surface) !important;
+    border-color: var(--md-sys-color-on-surface) !important;
+    color: var(--background-colour) !important;
+    box-shadow: none;
+  }
+  .startRange,
+  .endRange {
+    background: var(--md-sys-color-primary) !important;
+    border-color: var(--md-sys-color-primary) !important;
+    color: var(--background-colour) !important;
+  }
+}
+
 #releaseNotesForm {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr repeat(9, auto) 1fr;
+  grid-template-rows: auto 1fr repeat(10, auto) 1fr;
 
   height: 100%;
 
@@ -101,7 +136,7 @@ md-icon {
 
   @media (min-width: 500px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto 1fr repeat(7, auto) 1fr;
+    grid-template-rows: auto 1fr repeat(8, auto) 1fr;
     max-width: 600px;
 
     h1,
@@ -110,6 +145,7 @@ md-icon {
     #organisation,
     #pat,
     #title,
+    #dateRange,
     md-icon {
       grid-column: 1 / span 2;
     }

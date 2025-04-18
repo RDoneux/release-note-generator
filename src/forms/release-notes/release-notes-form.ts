@@ -9,6 +9,8 @@ import { IReleaseNotesForm } from './i-release-notes'
 import { getPrInfo } from '../../api/get-pr-info'
 import { AxiosResponse } from 'axios'
 import { generateReleaseNotes } from '../../utils/generate-release-notes'
+import flatpickr from 'flatpickr'
+import { IPullRequest } from '../../interfaces/i-pull-request'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
   title: { validations: [required()] },
@@ -29,6 +31,8 @@ export class ReleaseNotesForm {
   username$ = watchControl('username')
   pat$ = watchControl('pat')
 
+  dateRange: Date[] = []
+
   releaseNotesForm: HTMLFormElement
 
   constructor() {
@@ -38,6 +42,14 @@ export class ReleaseNotesForm {
 
     this.setupInputListeners()
     this.setupFormSubmitListener()
+
+    flatpickr('#dateRange', {
+      mode: 'range',
+      dateFormat: 'd-m-Y',
+      onChange: (selectedDates) => {
+        this.dateRange = selectedDates
+      },
+    })
   }
 
   setupInputListeners() {
@@ -74,6 +86,8 @@ export class ReleaseNotesForm {
     const { organisation, project, repository, searchCriteria, username, pat } =
       releaseNotesFormControl
 
+    //TODO: move everything below to service
+
     const response: AxiosResponse = await getPrInfo(
       organisation.value ?? '',
       project.value ?? '',
@@ -83,6 +97,24 @@ export class ReleaseNotesForm {
       pat.value ?? ''
     )
 
-    generateReleaseNotes(response.data.value)
+    const pullRequests: IPullRequest[] = this.filterPrInfoByDateRange(
+      this.dateRange,
+      response.data.value
+    )
+
+    generateReleaseNotes(pullRequests)
+  }
+
+  filterPrInfoByDateRange(
+    dateRange: Date[],
+    pullRequests: IPullRequest[]
+  ): IPullRequest[] {
+    const startDate = dateRange[0]
+    const endDate = dateRange[1]
+
+    return pullRequests.filter(
+      (pr: IPullRequest) =>
+        pr.closedDate >= startDate && pr.closedDate <= endDate
+    )
   }
 }

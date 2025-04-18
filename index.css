@@ -5,6 +5,7 @@
 :root {
   --text-colour: #c0bfbf;
   --background-colour: #131218;
+  --background-high-colour: #2d2316;
 
   /* Define Material Design color tokens */
   --md-sys-color-primary: #cf9f45; /* Primary color */
@@ -18,15 +19,22 @@
   --md-sys-color-surface: var(
     --background-colour
   ); /* Background surface color */
+  --md-sys-color-surface-container-high: var(
+    --background-high-colour
+  ); /* Background surface color */
   --md-sys-color-surface-container: var(
     --background-colour
   ); /* Background surface color */
   --md-sys-color-on-surface: var(--text-colour); /* Text color on surface */
+  --md-sys-color-on-surface-variant: #dfdfdf; /* Text color on surface variant */
 
   --md-sys-color-background: #131218; /* Background color */
   --md-sys-color-on-background: var(
     --text-colour
   ); /* Text color on background */
+
+  /* Component tokens */
+  --md-dialog-container-shape: 0px;
 
   --md-sys-color-error: #df5555;
   --md-sys-color-error-container: #df5555;
@@ -49,20 +57,26 @@ body {
   padding: 0;
   background-color: var(--md-sys-color-background);
   color: var(--md-sys-color-on-primary);
-  overflow: hidden;
 }
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   height: 100%;
+}
+
+md-icon {
+  --md-icon-font: 'Material Symbols Rounded';
+  justify-self: flex-end;
+  cursor: pointer;
 }
 
 #releaseNotesForm {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr repeat(7, auto) 1fr;
+  grid-template-rows: auto 1fr repeat(9, auto) 1fr;
 
   height: 100%;
 
@@ -81,19 +95,38 @@ body {
 
   md-filled-tonal-button {
     margin-top: 10px;
+    justify-self: flex-end;
+    width: 100%;
   }
 
   @media (min-width: 500px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto 1fr repeat(5, auto) 1fr;
+    grid-template-rows: auto 1fr repeat(7, auto) 1fr;
     max-width: 600px;
 
     h1,
     small,
     md-filled-tonal-button,
     #organisation,
-    #pat {
-      grid-column: span 2;
+    #pat,
+    #title,
+    md-icon {
+      grid-column: 1 / span 2;
+    }
+  }
+}
+
+#settingsForm {
+  border-radius: 10px;
+  form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(8, auto) 1fr;
+    gap: 10px;
+
+    h4 {
+      padding: 0;
+      margin: 0;
     }
   }
 }

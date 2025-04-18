@@ -11,6 +11,7 @@ import { AxiosResponse } from 'axios'
 import { generateReleaseNotes } from '../../utils/generate-release-notes'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
+  title: { validations: [required()] },
   organisation: { validations: [required()] },
   project: { validations: [required()] },
   repository: { validations: [required()] },
@@ -20,6 +21,7 @@ const releaseNotesFormControl: IReleaseNotesForm = {
 }
 
 export class ReleaseNotesForm {
+  title$ = watchControl('title')
   orgName$ = watchControl('organisation')
   projName$ = watchControl('project')
   repoName$ = watchControl('repository')
@@ -40,6 +42,7 @@ export class ReleaseNotesForm {
 
   setupInputListeners() {
     merge(
+      this.title$,
       this.orgName$,
       this.projName$,
       this.repoName$,

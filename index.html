@@ -3,6 +3,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1"
+      rel="stylesheet"
+    />
     <title>Release Notes Generator</title>
   </head>
 
@@ -10,6 +14,12 @@
     <form id="releaseNotesForm">
       <h1>Release Note Generator</h1>
       <small>PR Scanner for Azure Projects</small>
+      <md-icon id="settings">settings</md-icon>
+
+      <md-outlined-text-field
+        id="title"
+        label="Release Title"
+      ></md-outlined-text-field>
       <md-outlined-text-field
         id="organisation"
         label="Organisation Name"
@@ -35,6 +45,34 @@
       >
     </form>
 
-    <script src="./index.js"></script>
+    <md-dialog id="settingsForm">
+      <form class="content" slot="content" method="dialog">
+        <h1>Settings</h1>
+
+        <h4>Change Type Hooks:</h4>
+        <small>Values are comma separated.</small>
+        <md-outlined-text-field
+          id="feature"
+          label="Feature"
+        ></md-outlined-text-field>
+        <md-outlined-text-field
+          id="bugfix"
+          label="Bugfix"
+        ></md-outlined-text-field>
+        <md-outlined-text-field
+          id="breakingChange"
+          label="Breaking Change"
+        ></md-outlined-text-field>
+        <md-outlined-text-field
+          id="improvement"
+          label="Improvement"
+        ></md-outlined-text-field>
+        <md-filled-tonal-button type="submit"
+          >Update Settings</md-filled-tonal-button
+        >
+      </form>
+    </md-dialog>
+
+    <script type="module" src="./index.js"></script>
   </body>
 </html>

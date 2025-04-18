@@ -3,13 +3,14 @@ import { promises as fs } from 'fs'; // Use promises API for better async handli
 
 async function watch() {
   let ctx = await esbuild.context({
-    entryPoints: ["./src/index.ts"],
+    entryPoints: ["./src/index.ts", "./index.css"],
     minify: false,
     sourcemap: true,
     outdir: "live",
     bundle: true,
     logLevel: "info",
-    loader: { ".ts": "ts" },
+    entryNames: '[name]',
+    loader: { ".css": "css" },
   })
 
   // Handle process termination signals for cleanup
@@ -31,7 +32,6 @@ async function watch() {
       console.log('No .env file found in build, skipping...');
     }
     await fs.copyFile('./index.html', './live/index.html');
-    await fs.copyFile('./index.css', './live/index.css');
     await fs.cp('./assets', './live/assets', { recursive: true });
     console.log('project built');
   });

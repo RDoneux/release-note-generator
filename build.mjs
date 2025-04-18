@@ -2,24 +2,39 @@ import * as esbuild from 'esbuild';
 import { promises as fs } from 'fs'; // Use promises API for better async handling
 import path from 'path';
 
+// Define the output directory
+const outdir = './dist';
+
+// Remove the output directory before building
+await fs.rm(outdir, { recursive: true, force: true }).catch((err) => {
+  if (err.code !== 'ENOENT') {
+    console.error('Error removing output directory:', err);
+    process.exit(1);
+  }
+});
+
 await esbuild
   .build({
-    entryPoints: ['./src/index.ts'],
+    entryPoints: ['./src/index.ts', './index.css'],
     bundle: true,
     minify: true,
-    outdir: 'dist',
+    splitting: true,
+    format: 'esm',
+    outdir,
+    entryNames: '[name]',
+    chunkNames: 'chunks/[name]-[hash]', // Chunk file names
+    loader: { '.css': 'css' },
   })
   .then(async () => {
     try {
-      await fs.copyFile('./.env', './dist/.env');
+      await fs.copyFile('./.env', `${outdir}/.env`);
     } catch {
       console.log('No .env file found in build, skipping...');
     }
-    await fs.copyFile('./index.html', './dist/index.html');
-    await fs.copyFile('./index.css', './dist/index.css');
-    await fs.cp('./assets', './dist/assets', { recursive: true });
+    await fs.copyFile('./index.html', `${outdir}/index.html`);
+    await fs.cp('./assets', `${outdir}/assets`, { recursive: true });
 
-    const report = await reportFileSizes('./dist');
+    const report = await reportFileSizes(outdir);
     console.log('File Size Report:\n' + report.lines.join('\n')); // Log the lines array as a string
     console.log('Total Size: ' + getReadableFileSize(report.totalBytes)); // Log the total size
     console.log('project built');
@@ -51,19 +66,18 @@ async function reportFileSizes(directory) {
     }
   }
 
-  getReadableFileSize(totalBytes);
   return { lines: reportLines, totalBytes }; // Return both the lines and total bytes
 }
-  
-  function getReadableFileSize(bytes) {
-    const units = ['Bytes', 'KB', 'MB', 'GB'];
-    let size = bytes;
-    let unitIndex = 0;
-  
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024;
-      unitIndex++;
-    }
-  
-    return `${size.toFixed(2)} ${units[unitIndex]}`;
+
+function getReadableFileSize(bytes) {
+  const units = ['Bytes', 'KB', 'MB', 'GB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
   }
+
+  return `${size.toFixed(2)} ${units[unitIndex]}`;
+}

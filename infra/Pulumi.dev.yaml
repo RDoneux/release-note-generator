@@ -1,0 +1,7 @@
+encryptionsalt: v1:7vhbj7xeyqM=:v1:/stNkqm9svfuaST/:lPZ/ARnHFIAx1AZO2L/g3VqBgmYRIA==
+config:
+  aws:region: eu-west-2
+  rng-infra:projectname: rng
+  rng-infra:servicename: web
+  rng-infra:hostedZone: doneuxservices.co.uk
+  rng-infra:subDomain: release-note-generator.doneuxservices.co.uk

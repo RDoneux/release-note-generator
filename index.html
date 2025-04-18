@@ -1,0 +1,40 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <title>Release Notes Generator</title>
+  </head>
+
+  <body>
+    <form id="releaseNotesForm">
+      <h1>Release Note Generator</h1>
+      <small>PR Scanner for Azure Projects</small>
+      <md-outlined-text-field
+        id="organisation"
+        label="Organisation Name"
+      ></md-outlined-text-field>
+      <md-outlined-text-field
+        id="project"
+        label="Project Name"
+      ></md-outlined-text-field>
+      <md-outlined-text-field
+        id="repository"
+        label="Repository Name"
+      ></md-outlined-text-field>
+      <md-outlined-select id="searchCriteria" label="Search Criteria">
+        <md-select-option selecteed value="completed">Merged</md-select-option>
+      </md-outlined-select>
+      <md-outlined-text-field
+        id="username"
+        label="Username"
+      ></md-outlined-text-field>
+      <md-outlined-text-field id="pat" label="PAT"></md-outlined-text-field>
+      <md-filled-tonal-button type="submit"
+        >Generate Release Notes</md-filled-tonal-button
+      >
+    </form>
+
+    <script src="./index.js"></script>
+  </body>
+</html>

@@ -2,16 +2,13 @@ import { fromEvent, Observable } from 'rxjs'
 import { IFormControl } from '../forms/core/i-form-core'
 
 export function watchControl(
-  controlId: string,
-  initValue?: string
-): Observable<Event> {
+  controlId: string
+): [Observable<Event>, HTMLInputElement] {
   const control: HTMLInputElement | null = document.getElementById(
     controlId
   ) as HTMLInputElement
   if (!control) console.warn(`Control with ID ${controlId} not found`)
-  control.value = initValue ?? ''
-
-  return fromEvent(control, 'input')
+  return [fromEvent(control, 'input'), control]
 }
 
 export function validateForm<T extends object>(form: T): boolean {
@@ -48,4 +45,18 @@ export function clearFormErrors<T extends object>(form: T) {
     control.removeAttribute('error')
     control.removeAttribute('error-text')
   })
+}
+
+export function initControlWithValue(
+  value: string,
+  control: HTMLElement,
+  sequence: number
+) {
+  setTimeout(() => {
+    const input: HTMLInputElement = control as HTMLInputElement
+    input.value = value
+    input.dispatchEvent(new Event('input'))
+    input.dispatchEvent(new Event('change'))
+    input.dispatchEvent(new Event('blur'))
+  }, sequence * 500)
 }

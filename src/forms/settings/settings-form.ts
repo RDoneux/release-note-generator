@@ -18,17 +18,6 @@ const settingsFormControl: ISettingsForm = {
 export class SettingsForm {
   values = settingsFormControl.changeTypes
 
-  feature$ = watchControl('feature', this.values.feature.value?.join(', '))
-  bugfix$ = watchControl('bugfix', this.values.bugfix.value?.join(', '))
-  breakingChange$ = watchControl(
-    'breakingChange',
-    this.values.breakingChange.value?.join(', ')
-  )
-  improvement$ = watchControl(
-    'improvement',
-    this.values.improvement.value?.join(', ')
-  )
-
   settingsForm: HTMLFormElement
   constructor() {
     this.settingsForm = document.getElementById(
@@ -40,7 +29,12 @@ export class SettingsForm {
   }
 
   setupInputListeners() {
-    merge(this.feature$, this.bugfix$, this.breakingChange$, this.improvement$)
+    const [feature$] = watchControl('feature')
+    const [bugfix$] = watchControl('bugfix')
+    const [breakingChange$] = watchControl('breakingChange')
+    const [improvement$] = watchControl('improvement')
+
+    merge(feature$, bugfix$, breakingChange$, improvement$)
       .pipe(debounceTime(200))
       .subscribe((event: Event) => {
         const target = event.target as HTMLInputElement | HTMLSelectElement

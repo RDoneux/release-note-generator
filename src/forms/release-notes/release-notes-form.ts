@@ -11,6 +11,7 @@ import { AxiosResponse } from 'axios'
 import { generateReleaseNotes } from '../../utils/generate-release-notes'
 import flatpickr from 'flatpickr'
 import { IPullRequest } from '../../interfaces/i-pull-request'
+import { isWithinInterval, startOfDay } from 'date-fns'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
   title: { validations: [required()] },
@@ -23,16 +24,7 @@ const releaseNotesFormControl: IReleaseNotesForm = {
 }
 
 export class ReleaseNotesForm {
-  title$ = watchControl('title')
-  orgName$ = watchControl('organisation')
-  projName$ = watchControl('project')
-  repoName$ = watchControl('repository')
-  searchCrit$ = watchControl('searchCriteria')
-  username$ = watchControl('username')
-  pat$ = watchControl('pat')
-
   dateRange: Date[] = []
-
   releaseNotesForm: HTMLFormElement
 
   constructor() {
@@ -53,15 +45,15 @@ export class ReleaseNotesForm {
   }
 
   setupInputListeners() {
-    merge(
-      this.title$,
-      this.orgName$,
-      this.projName$,
-      this.repoName$,
-      this.searchCrit$,
-      this.username$,
-      this.pat$
-    )
+    const [title$] = watchControl('title')
+    const [orgName$] = watchControl('organisation')
+    const [projName$] = watchControl('project')
+    const [repoName$] = watchControl('repository')
+    const [searchCrit$] = watchControl('searchCriteria')
+    const [username$] = watchControl('username')
+    const [pat$] = watchControl('pat')
+
+    merge(title$, orgName$, projName$, repoName$, searchCrit$, username$, pat$)
       .pipe(debounceTime(200))
       .subscribe((event: Event) => {
         const target = event.target as HTMLInputElement | HTMLSelectElement
@@ -69,6 +61,18 @@ export class ReleaseNotesForm {
           target.value
         clearFormErrors(releaseNotesFormControl)
       })
+
+    // initControlWithValue('Release Notes', title, 0)
+    // initControlWithValue('robertdoneux', orgName, 1)
+    // initControlWithValue('hr-pr-test', projName, 2)
+    // initControlWithValue('hr-pr-test', repoName, 3)
+    // initControlWithValue('completed', searchCrit, 4)
+    // initControlWithValue('robertdoneux', username, 5)
+    // initControlWithValue(
+    //   '855e5st1m6hTRn40Xabvq86MZFg4vUPG3CAnaIRtzG5p5ZFPNZdSJQQJ99BDACAAAAAAAAAAAAASAZDO2D1c',
+    //   pat,
+    //   6
+    // )
   }
 
   setupFormSubmitListener() {
@@ -109,12 +113,17 @@ export class ReleaseNotesForm {
     dateRange: Date[],
     pullRequests: IPullRequest[]
   ): IPullRequest[] {
-    const startDate = dateRange[0]
-    const endDate = dateRange[1]
+    const [start, end] = dateRange
 
-    return pullRequests.filter(
-      (pr: IPullRequest) =>
-        pr.closedDate >= startDate && pr.closedDate <= endDate
-    )
+    const normalizedStart = startOfDay(start)
+    const normalizedEnd = startOfDay(end)
+
+    return pullRequests.filter((pr: IPullRequest) => {
+      const prCloseDate = startOfDay(new Date(pr.closedDate)) // Normalize PR close date
+      return isWithinInterval(prCloseDate, {
+        start: normalizedStart,
+        end: normalizedEnd,
+      })
+    })
   }
 }

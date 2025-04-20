@@ -3,6 +3,7 @@ import {
   watchControl,
   clearFormErrors,
   validateForm,
+  initControlWithValue,
 } from '../../utils/form-control-utils'
 import { required } from '../../utils/form-validations'
 import { IReleaseNotesForm } from './i-release-notes'
@@ -47,13 +48,13 @@ export class ReleaseNotesForm {
   }
 
   setupInputListeners() {
-    const [title$] = watchControl('title')
-    const [orgName$] = watchControl('organisation')
-    const [projName$] = watchControl('project')
-    const [repoName$] = watchControl('repository')
-    const [searchCrit$] = watchControl('searchCriteria')
-    const [username$] = watchControl('username')
-    const [pat$] = watchControl('pat')
+    const [title$, title] = watchControl('title')
+    const [orgName$, orgName] = watchControl('organisation')
+    const [projName$, projName] = watchControl('project')
+    const [repoName$, repoName] = watchControl('repository')
+    const [searchCrit$, searchCrit] = watchControl('searchCriteria')
+    const [username$, username] = watchControl('username')
+    const [pat$, pat] = watchControl('pat')
 
     merge(title$, orgName$, projName$, repoName$, searchCrit$, username$, pat$)
       .pipe(debounceTime(200))
@@ -63,6 +64,18 @@ export class ReleaseNotesForm {
           target.value
         clearFormErrors(releaseNotesFormControl)
       })
+
+    initControlWithValue('Release Notes', title, 0)
+    initControlWithValue('Hawkrose', orgName, 0)
+    initControlWithValue('4b069ba2-7d68-4c6a-a141-c1a38eb1ddf9', projName, 1)
+    initControlWithValue('haop-airport-optimisation-be', repoName, 2)
+    initControlWithValue('completed', searchCrit, 3)
+    initControlWithValue('robdoneux@hawkrose.com', username, 4)
+    initControlWithValue(
+      '1XapT59j5QYY3swKUVwGp3y8IL9KTBlqe6NtQHXSEzV38P6iD2g2JQQJ99BDACAAAAAjYQIYAAASAZDO1j4l',
+      pat,
+      5
+    )
   }
 
   setupFormSubmitListener() {
@@ -77,7 +90,7 @@ export class ReleaseNotesForm {
   }
 
   async onValidFormSubmitted() {
-    showSpinner('generateReleaseNotesButton', { left: '94%' })
+    showSpinner('generateReleaseNotesButton', { top: '70px' })
 
     const { organisation, project, repository, searchCriteria, username, pat } =
       releaseNotesFormControl
@@ -90,7 +103,9 @@ export class ReleaseNotesForm {
         repository.value ?? '',
         searchCriteria.value ?? '',
         username.value ?? '',
-        pat.value ?? ''
+        pat.value ?? '',
+        this.dateRange[0] ?? new Date(),
+        this.dateRange[1] ?? new Date()
       )
 
       const pullRequests: IPullRequest[] = this.filterPrInfoByDateRange(

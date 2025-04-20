@@ -46,8 +46,12 @@
         id="username"
         label="Username"
       ></md-outlined-text-field>
-      <md-outlined-text-field id="pat" label="PAT"></md-outlined-text-field>
-      <md-filled-tonal-button type="submit"
+      <md-outlined-text-field
+        id="pat"
+        type="password"
+        label="PAT"
+      ></md-outlined-text-field>
+      <md-filled-tonal-button id="generateReleaseNotesButton" type="submit"
         >Generate Release Notes</md-filled-tonal-button
       >
     </form>
@@ -80,6 +84,8 @@
       </form>
     </md-dialog>
 
+    <div id="spinnerTarget"></div>
+    <div id="toastContainer" class="toast-container"></div>
     <script type="module" src="./index.js"></script>
   </body>
 </html>

@@ -7,11 +7,13 @@ import {
 import { required } from '../../utils/form-validations'
 import { IReleaseNotesForm } from './i-release-notes'
 import { getPrInfo } from '../../api/get-pr-info'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { generateReleaseNotes } from '../../utils/generate-release-notes'
 import flatpickr from 'flatpickr'
 import { IPullRequest } from '../../interfaces/i-pull-request'
 import { isWithinInterval, startOfDay } from 'date-fns'
+import { showToast, ToastType } from '../../utils/toast'
+import { hideSpinner, showSpinner } from '../../utils/spinner'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
   title: { validations: [required()] },
@@ -61,18 +63,6 @@ export class ReleaseNotesForm {
           target.value
         clearFormErrors(releaseNotesFormControl)
       })
-
-    // initControlWithValue('Release Notes', title, 0)
-    // initControlWithValue('robertdoneux', orgName, 1)
-    // initControlWithValue('hr-pr-test', projName, 2)
-    // initControlWithValue('hr-pr-test', repoName, 3)
-    // initControlWithValue('completed', searchCrit, 4)
-    // initControlWithValue('robertdoneux', username, 5)
-    // initControlWithValue(
-    //   '855e5st1m6hTRn40Xabvq86MZFg4vUPG3CAnaIRtzG5p5ZFPNZdSJQQJ99BDACAAAAAAAAAAAAASAZDO2D1c',
-    //   pat,
-    //   6
-    // )
   }
 
   setupFormSubmitListener() {
@@ -87,26 +77,35 @@ export class ReleaseNotesForm {
   }
 
   async onValidFormSubmitted() {
+    showSpinner('generateReleaseNotesButton', { left: '94%' })
+
     const { organisation, project, repository, searchCriteria, username, pat } =
       releaseNotesFormControl
 
     //TODO: move everything below to service
+    try {
+      const response: AxiosResponse = await getPrInfo(
+        organisation.value ?? '',
+        project.value ?? '',
+        repository.value ?? '',
+        searchCriteria.value ?? '',
+        username.value ?? '',
+        pat.value ?? ''
+      )
 
-    const response: AxiosResponse = await getPrInfo(
-      organisation.value ?? '',
-      project.value ?? '',
-      repository.value ?? '',
-      searchCriteria.value ?? '',
-      username.value ?? '',
-      pat.value ?? ''
-    )
+      const pullRequests: IPullRequest[] = this.filterPrInfoByDateRange(
+        this.dateRange,
+        response.data.value
+      )
 
-    const pullRequests: IPullRequest[] = this.filterPrInfoByDateRange(
-      this.dateRange,
-      response.data.value
-    )
-
-    generateReleaseNotes(pullRequests)
+      generateReleaseNotes(pullRequests)
+      showToast('Release notes generated successfully!', ToastType.SUCCESS)
+    } catch (error: unknown) {
+      const typedError: AxiosError = error as AxiosError
+      showToast(typedError.message, ToastType.ERROR)
+      return
+    }
+    hideSpinner()
   }
 
   filterPrInfoByDateRange(
@@ -114,6 +113,10 @@ export class ReleaseNotesForm {
     pullRequests: IPullRequest[]
   ): IPullRequest[] {
     const [start, end] = dateRange
+
+    if (!start || !end) {
+      return pullRequests
+    }
 
     const normalizedStart = startOfDay(start)
     const normalizedEnd = startOfDay(end)

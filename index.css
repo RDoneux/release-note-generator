@@ -36,8 +36,8 @@
   /* Component tokens */
   --md-dialog-container-shape: 0px;
 
-  --md-sys-color-error: #df5555;
-  --md-sys-color-error-container: #df5555;
+  --md-sys-color-error: #a32828;
+  --md-sys-color-error-container: #a32828;
 
   /* Define typography tokens */
   --md-sys-typescale-body-large-font: 'Roboto', sans-serif;
@@ -164,5 +164,81 @@ md-icon {
       padding: 0;
       margin: 0;
     }
+  }
+}
+
+/* TOAST START */
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 4px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-family: var(--md-sys-typescale-body-large-font);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  opacity: 0;
+  animation: fadeInOut 4s ease-in-out forwards;
+
+  &.error {
+    background-color: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-surface);
+  }
+
+  &.success {
+    background-color: #118a11;
+    color: var(--md-sys-color-on-surface);
+  }
+  &.warning {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-surface);
+  }
+}
+
+/* Toast animation */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* TOAST END */
+
+@keyframes spinner-line-shrink {
+  0%,
+  25%,
+  100% {
+    /* minimum scale and opacity */
+    transform: scale(0.5);
+    opacity: 0.25;
+  }
+  26% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

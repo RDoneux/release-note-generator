@@ -1,7 +1,10 @@
 import { IPullRequest } from '../interfaces/i-pull-request'
 import Handlebars from 'handlebars'
 
-export async function generateReleaseNotes(pullRequests: IPullRequest[]) {
+export async function generateReleaseNotes(
+  title: string,
+  pullRequests: IPullRequest[]
+) {
   const response = await fetch('/assets/templates/base-template.hbs')
   if (!response.ok) {
     throw new Error(`Failed to load template: ${response.statusText}`)
@@ -11,7 +14,7 @@ export async function generateReleaseNotes(pullRequests: IPullRequest[]) {
   const template = Handlebars.compile(templateContent)
 
   const data = {
-    title: 'Release Notes',
+    title,
     header: 'Release Notes',
     pullRequests: pullRequests,
   }

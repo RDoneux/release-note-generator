@@ -79,8 +79,15 @@ export class ReleaseNotesForm {
   async onValidFormSubmitted() {
     showSpinner('generateReleaseNotesButton', { top: '70px' })
 
-    const { organisation, project, repository, searchCriteria, username, pat } =
-      releaseNotesFormControl
+    const {
+      title,
+      organisation,
+      project,
+      repository,
+      searchCriteria,
+      username,
+      pat,
+    } = releaseNotesFormControl
 
     //TODO: move everything below to service
     try {
@@ -100,7 +107,7 @@ export class ReleaseNotesForm {
         response.data.value
       )
 
-      generateReleaseNotes(pullRequests)
+      generateReleaseNotes(title.value ?? '', pullRequests)
       showToast('Release notes generated successfully!', ToastType.SUCCESS)
     } catch (error: unknown) {
       const typedError: AxiosError = error as AxiosError

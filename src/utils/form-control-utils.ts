@@ -18,6 +18,7 @@ export function validateForm<T extends object>(form: T): boolean {
 
     controlValue.validations?.some((validation) => {
       const isValid = validation.validation(controlValue.value)
+      console.log(isValid)
       return isValid
         ? ((controlValue.error = undefined), false)
         : ((controlValue.error = validation.message), true)
@@ -33,8 +34,8 @@ export function validateForm<T extends object>(form: T): boolean {
     }
   })
 
-  return values.some(
-    (control: IFormControl<unknown>) => control.error == undefined
+  return !values.some(
+    (control: IFormControl<unknown>) => control.error != undefined
   )
 }
 

@@ -10,8 +10,6 @@ import { getPrInfo } from '../../api/get-pr-info'
 import { AxiosError, AxiosResponse } from 'axios'
 import { generateReleaseNotes } from '../../utils/generate-release-notes'
 import flatpickr from 'flatpickr'
-import { IPullRequest } from '../../interfaces/i-pull-request'
-import { isWithinInterval, startOfDay } from 'date-fns'
 import { showToast, ToastType } from '../../utils/toast'
 import { hideSpinner, showSpinner } from '../../utils/spinner'
 
@@ -98,16 +96,11 @@ export class ReleaseNotesForm {
         searchCriteria.value ?? '',
         username.value ?? '',
         pat.value ?? '',
-        this.dateRange[0] ?? new Date(),
-        this.dateRange[1] ?? new Date()
+        this.dateRange[0],
+        this.dateRange[1]
       )
 
-      const pullRequests: IPullRequest[] = this.filterPrInfoByDateRange(
-        this.dateRange,
-        response.data.value
-      )
-
-      generateReleaseNotes(title.value ?? '', pullRequests)
+      generateReleaseNotes(title.value ?? '', response.data.value)
       showToast('Release notes generated successfully!', ToastType.SUCCESS)
     } catch (error: unknown) {
       const typedError: AxiosError = error as AxiosError
@@ -117,25 +110,25 @@ export class ReleaseNotesForm {
     hideSpinner()
   }
 
-  filterPrInfoByDateRange(
-    dateRange: Date[],
-    pullRequests: IPullRequest[]
-  ): IPullRequest[] {
-    const [start, end] = dateRange
+  // filterPrInfoByDateRange(
+  //   dateRange: Date[],
+  //   pullRequests: IPullRequest[]
+  // ): IPullRequest[] {
+  //   const [start, end] = dateRange
 
-    if (!start || !end) {
-      return pullRequests
-    }
+  //   if (!start || !end) {
+  //     return pullRequests
+  //   }
 
-    const normalizedStart = startOfDay(start)
-    const normalizedEnd = startOfDay(end)
+  //   const normalizedStart = startOfDay(start)
+  //   const normalizedEnd = startOfDay(end)
 
-    return pullRequests.filter((pr: IPullRequest) => {
-      const prCloseDate = startOfDay(new Date(pr.closedDate)) // Normalize PR close date
-      return isWithinInterval(prCloseDate, {
-        start: normalizedStart,
-        end: normalizedEnd,
-      })
-    })
-  }
+  //   return pullRequests.filter((pr: IPullRequest) => {
+  //     const prCloseDate = startOfDay(new Date(pr.closedDate)) // Normalize PR close date
+  //     return isWithinInterval(prCloseDate, {
+  //       start: normalizedStart,
+  //       end: normalizedEnd,
+  //     })
+  //   })
+  // }
 }

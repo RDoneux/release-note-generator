@@ -6,12 +6,11 @@ import {
 } from '../../utils/form-control-utils'
 import { required } from '../../utils/form-validations'
 import { IReleaseNotesForm } from './i-release-notes'
-import { getPrInfo } from '../../api/get-pr-info'
-import { AxiosError, AxiosResponse } from 'axios'
-import { generateReleaseNotes } from '../../utils/generate-release-notes'
+import { AxiosError } from 'axios'
 import flatpickr from 'flatpickr'
 import { showToast, ToastType } from '../../utils/toast'
 import { hideSpinner, showSpinner } from '../../utils/spinner'
+import { getAndProcessPullRequestInformation } from '../services/release-note-form-service'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
   title: { validations: [required()] },
@@ -77,30 +76,11 @@ export class ReleaseNotesForm {
   async onValidFormSubmitted() {
     showSpinner('generateReleaseNotesButton', { top: '70px' })
 
-    const {
-      title,
-      organisation,
-      project,
-      repository,
-      searchCriteria,
-      username,
-      pat,
-    } = releaseNotesFormControl
-
-    //TODO: move everything below to service
     try {
-      const response: AxiosResponse = await getPrInfo(
-        organisation.value ?? '',
-        project.value ?? '',
-        repository.value ?? '',
-        searchCriteria.value ?? '',
-        username.value ?? '',
-        pat.value ?? '',
-        this.dateRange[0],
-        this.dateRange[1]
+      getAndProcessPullRequestInformation(
+        releaseNotesFormControl,
+        this.dateRange
       )
-
-      generateReleaseNotes(title.value ?? '', response.data.value)
       showToast('Release notes generated successfully!', ToastType.SUCCESS)
     } catch (error: unknown) {
       const typedError: AxiosError = error as AxiosError
@@ -109,26 +89,4 @@ export class ReleaseNotesForm {
     }
     hideSpinner()
   }
-
-  // filterPrInfoByDateRange(
-  //   dateRange: Date[],
-  //   pullRequests: IPullRequest[]
-  // ): IPullRequest[] {
-  //   const [start, end] = dateRange
-
-  //   if (!start || !end) {
-  //     return pullRequests
-  //   }
-
-  //   const normalizedStart = startOfDay(start)
-  //   const normalizedEnd = startOfDay(end)
-
-  //   return pullRequests.filter((pr: IPullRequest) => {
-  //     const prCloseDate = startOfDay(new Date(pr.closedDate)) // Normalize PR close date
-  //     return isWithinInterval(prCloseDate, {
-  //       start: normalizedStart,
-  //       end: normalizedEnd,
-  //     })
-  //   })
-  // }
 }

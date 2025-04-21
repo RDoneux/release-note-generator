@@ -10,7 +10,7 @@ import { AxiosError } from 'axios'
 import flatpickr from 'flatpickr'
 import { showToast, ToastType } from '../../utils/toast'
 import { hideSpinner, showSpinner } from '../../utils/spinner'
-import { getAndProcessPullRequestInformation } from '../services/release-note-form-service'
+import { getAndProcessPullRequestInformation } from './services/release-note-form-service'
 
 const releaseNotesFormControl: IReleaseNotesForm = {
   title: { validations: [required()] },

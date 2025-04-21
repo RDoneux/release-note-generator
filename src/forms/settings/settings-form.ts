@@ -5,6 +5,7 @@ import {
   watchControl,
 } from '../../utils/form-control-utils'
 import { ISettingsForm } from './i-settings'
+import { SETTINGS } from '../../globals/settings'
 
 const settingsFormControl: ISettingsForm = {
   changeTypes: {
@@ -29,10 +30,23 @@ export class SettingsForm {
   }
 
   setupInputListeners() {
-    const [feature$] = watchControl('feature')
-    const [bugfix$] = watchControl('bugfix')
-    const [breakingChange$] = watchControl('breakingChange')
-    const [improvement$] = watchControl('improvement')
+    const [titleHooksControl$] = watchControl(
+      'titleHooksControl',
+      SETTINGS.CATEGORISE_PULL_REQUESTS ? 'true' : ''
+    )
+    titleHooksControl$.subscribe((event: Event) => {
+      const titleHooksComponent = document.getElementById(
+        'titleHooks'
+      ) as HTMLDivElement
+      const shouldShow = (event.target as HTMLInputElement).checked
+      SETTINGS.CATEGORISE_PULL_REQUESTS = shouldShow
+      titleHooksComponent.style.display = shouldShow ? 'flex' : 'none'
+    })
+
+    const [feature$] = watchControl('feature', 'feat,feature')
+    const [bugfix$] = watchControl('bugfix', 'bugfix')
+    const [breakingChange$] = watchControl('breakingChange', 'breaking-change')
+    const [improvement$] = watchControl('improvement', 'improvement')
 
     merge(feature$, bugfix$, breakingChange$, improvement$)
       .pipe(debounceTime(200))
@@ -45,7 +59,6 @@ export class SettingsForm {
       })
 
     document.getElementById('settings')?.addEventListener('click', () => {
-      console.log('clicked')
       this.settingsForm?.toggleAttribute('open')
     })
   }

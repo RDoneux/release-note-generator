@@ -59,28 +59,39 @@
     <md-dialog id="settingsForm">
       <form class="content" slot="content" method="dialog">
         <h1>Settings</h1>
-
         <h4>Change Type Hooks:</h4>
-        <small>Values are comma separated.</small>
-        <md-outlined-text-field
-          id="feature"
-          label="Feature"
-        ></md-outlined-text-field>
-        <md-outlined-text-field
-          id="bugfix"
-          label="Bugfix"
-        ></md-outlined-text-field>
-        <md-outlined-text-field
-          id="breakingChange"
-          label="Breaking Change"
-        ></md-outlined-text-field>
-        <md-outlined-text-field
-          id="improvement"
-          label="Improvement"
-        ></md-outlined-text-field>
-        <md-filled-tonal-button type="submit"
-          >Update Settings</md-filled-tonal-button
-        >
+        <label>
+          <md-checkbox
+            touch-target="wrapper"
+            id="titleHooksControl"
+          ></md-checkbox>
+          Separate titles by title
+        </label>
+        <div id="titleHooks">
+          <small
+            >Values are comma separated. Release note titles will be scanned for
+            the listed values and separated into corresponding categories</small
+          >
+          <md-outlined-text-field
+            id="feature"
+            label="Feature"
+          ></md-outlined-text-field>
+          <md-outlined-text-field
+            id="bugfix"
+            label="Bugfix"
+          ></md-outlined-text-field>
+          <md-outlined-text-field
+            id="breakingChange"
+            label="Breaking Change"
+          ></md-outlined-text-field>
+          <md-outlined-text-field
+            id="improvement"
+            label="Improvement"
+          ></md-outlined-text-field>
+          <md-filled-tonal-button type="submit"
+            >Update Settings</md-filled-tonal-button
+          >
+        </div>
       </form>
     </md-dialog>
 

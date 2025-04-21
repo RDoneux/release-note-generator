@@ -73,6 +73,10 @@ md-icon {
   cursor: pointer;
 }
 
+md-checkbox {
+  margin: 0 10px 0 0;
+}
+
 .flatpickr-calendar {
   * {
     background-color: var(--background-high-colour) !important;
@@ -154,15 +158,22 @@ md-icon {
 
 #settingsForm {
   border-radius: 10px;
+
   form {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(8, auto) 1fr;
     gap: 10px;
+    width: 450px;
 
     h4 {
       padding: 0;
       margin: 0;
+    }
+
+    #titleHooks {
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
     }
   }
 }

@@ -2,12 +2,20 @@ import { fromEvent, Observable } from 'rxjs'
 import { IFormControl } from '../forms/core/i-form-core'
 
 export function watchControl(
-  controlId: string
+  controlId: string,
+  initValue: string = ''
 ): [Observable<Event>, HTMLInputElement] {
   const control: HTMLInputElement | null = document.getElementById(
     controlId
   ) as HTMLInputElement
   if (!control) console.warn(`Control with ID ${controlId} not found`)
+  if (initValue.length) {
+    control.value = initValue
+    control.checked = true
+  } else {
+    control.checked = false
+  }
+  setTimeout(() => control.dispatchEvent(new Event('input')))
   return [fromEvent(control, 'input'), control]
 }
 

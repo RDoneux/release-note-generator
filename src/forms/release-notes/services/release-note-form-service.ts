@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
-import { getPrInfo } from '../../api/get-pr-info'
-import { generateReleaseNotes } from '../../utils/generate-release-notes'
-import { IReleaseNotesForm } from '../release-notes/i-release-notes'
+import { getPrInfo } from '../../../api/get-pr-info'
+import { generateReleaseNotes } from '../../../utils/generate-release-notes'
+import { IReleaseNotesForm } from '../i-release-notes'
+import { SETTINGS } from '../../../globals/settings'
 
 export async function getAndProcessPullRequestInformation(
   releaseNotesFormControl: IReleaseNotesForm,
@@ -27,6 +28,6 @@ export async function getAndProcessPullRequestInformation(
     dateRange[0],
     dateRange[1]
   )
-
+  console.log(SETTINGS.CATEGORISE_PULL_REQUESTS)
   generateReleaseNotes(title.value ?? '', response.data.value)
 }

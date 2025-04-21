@@ -163,7 +163,7 @@ md-checkbox {
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
-    width: 450px;
+    width: 100%;
 
     h4 {
       padding: 0;

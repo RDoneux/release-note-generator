@@ -5,7 +5,7 @@ import appSlice from './app-slice'
 
 // Persist configuration
 const persistConfig = {
-  key: 'root',
+  key: 'rng',
   storage,
 }
 

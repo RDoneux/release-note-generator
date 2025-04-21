@@ -10,6 +10,10 @@ import('@material/web/dialog/dialog.js')
 
 import { ReleaseNotesForm } from './forms/release-notes/release-notes-form'
 import { SettingsForm } from './forms/settings/settings-form'
+import { persistor } from './store'
 
-new ReleaseNotesForm()
-new SettingsForm()
+// persistor.persist()
+persistor.flush().then(() => {
+  new ReleaseNotesForm()
+  new SettingsForm()
+})
